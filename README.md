@@ -1,6 +1,6 @@
 # DeepVOG
 
-DeepVOG is a framework for pupil segmentation and gaze estimation based on a fully convolutional neural network. 
+DeepVOG is a framework for pupil segmentation and gaze estimation based on a fully convolutional neural network.
 
 ## Getting Started
 
@@ -11,14 +11,74 @@ These instructions will get you a copy of the project up and running on your loc
 To run DeepVOG, you need to have a Python distribution (we recommend [Anaconda](https://www.anaconda.com/)) and the following Python packages:
 
 ```
-scikit-image
-Tensorflow
-etc.
+numpy >= 1.12
+scikit-video >=1.1.0
+scikit-image >= 0.14.0
+tensorflow-gpu >= 1.12.0
+keras >= 2.2.4
+urwid
+```
+As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker.
+### Installing
+A step by step series of examples that tell you how to get DeepVOG running.<br/>
+1. Installing from package
+
+```
+$ git clone https://github.com/pydsgz/DeepVOG
+$ cd ~/DeepVOG/
+$ python setup.py install
 ```
 
-### Installing
+2. If you are familiar with docker, you can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
-A step by step series of examples that tell you how to get DeepVOG running.
+```
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.0.0 bash
+or
+$ nvidia-docker run -it --rm yyhho/deepvog:v1.0.0 bash
+```
+
+### Usage (Text-based user interface)
+DeepVOG comes with a simple text-based user interface (TUI). After installation, you can simply call in python:
+```python
+import deepvog
+tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
+tui.run()
+```
+For organization of data, it is recommended the base_dir follows the structure below: <br/>
+```
+/base_dir
+    /fitting_dir # which contains video clips for estimating an 3D eyeball model
+        /video_1.mp4
+        /video_2.mp4
+        /...
+    /model_dir # which will store the eyeball models fitted by the program
+    /inference_dir # which contain video clips on which you want to infer the gaze directions
+        /video_3.mp4
+        /...
+    /results_dir # which will store the gaze results (.csv) inferred based on the 3D eyeball model.
+        
+```
+
+Result:<br/>
+![https://i.imgur.com/0zc13mv.png](https://i.imgur.com/0zc13mv.png)<br/>
+From now on, you can follow the instruction within the interface and do offline analysis on your videos.<br/>
+
+For docker user, you may call the command below:<br/>
+```
+$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+or
+$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+```
+
+### Usage (As a python module)
+For more flexibility, you may import the module directly in python.
+```python
+import deepvog
+model = deepvog.load_DeepVOG() # Load our pretrained deep-learning model
+inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) # it requires information of your camera's focal length and sensor size, which should be available in product manual. 
+inferer.fit("video_1.mp4")
+inferer.predict("video_1.mp4", "result_video_1.csv" ) # infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
+```
 
 ## Publication and Citation
 
