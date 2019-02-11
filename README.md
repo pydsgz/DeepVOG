@@ -52,10 +52,10 @@ tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
 tui.run()
 ```
 
-If it is successful, you should see the interface<br/>
+If it is successful, you should see the interface. <br/>
 
 <p align="center"> 
-<img width="320" height="240" src="https://i.imgur.com/0zc13mv.png">
+<img src="https://i.imgur.com/0zc13mv.png">
 </p>
 From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
 
