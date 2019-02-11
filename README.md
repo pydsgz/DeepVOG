@@ -1,6 +1,9 @@
 # DeepVOG
-
-DeepVOG is a framework for pupil segmentation and gaze estimation based on a fully convolutional neural network.
+<p align="center"> 
+<img src="ellipsoids.png">
+</p>
+div style="text-align:center"><img src ="ellipsoids.png" /></div>
+DeepVOG is a framework for pupil segmentation and gaze estimation based on a fully convolutional neural network. Currently it is available for offline gaze estimation of eye-tracking video clips.
 
 ## Getting Started
 
@@ -49,6 +52,8 @@ import deepvog
 tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
 tui.run()
 ```
+DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it can estimate the gaze direction on other videos. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. For clinical use, users may want to have a separate clip where the subject performed a calibration paradigm, specifically for model fitting. <br/>
+
 For organization of data, it is recommended the base_dir follows the structure below: <br/>
 ```
 /base_dir
@@ -84,10 +89,12 @@ inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) # 
 inferer.fit("video_1.mp4")
 inferer.predict("video_1.mp4", "result_video_1.csv" ) # infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
 ```
-Enjoy!
 ## Publication and Citation
 
 If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
+
+Links to other papers:
+
 
 ## Authors
 
