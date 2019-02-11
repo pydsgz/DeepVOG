@@ -1,6 +1,6 @@
 # DeepVOG
 <p align="center"> 
-<img src="ellipsoids.png">
+<img width="320" height="240" src="ellipsoids.png">
 </p>
 DeepVOG is a framework for pupil segmentation and gaze estimation based on a fully convolutional neural network. Currently it is available for offline gaze estimation of eye-tracking video clips.
 
