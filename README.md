@@ -18,7 +18,7 @@ tensorflow-gpu >= 1.12.0
 keras >= 2.2.4
 urwid
 ```
-As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker.
+As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker (or nvidia runtime of docker).
 ### Installing
 A step by step series of examples that tell you how to get DeepVOG running.<br/>
 1. Installing from package
@@ -28,7 +28,12 @@ $ git clone https://github.com/pydsgz/DeepVOG
 $ cd ~/DeepVOG/
 $ python setup.py install
 ```
-
+If it happens to be missing some dependencies listed above, you may install them with pip: {br/}
+```
+$ pip install numpy
+$ pip install scikit-video
+$ ...
+```
 2. If you are familiar with docker, you can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
@@ -79,7 +84,7 @@ inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) # 
 inferer.fit("video_1.mp4")
 inferer.predict("video_1.mp4", "result_video_1.csv" ) # infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
 ```
-
+Enjoy!
 ## Publication and Citation
 
 If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
