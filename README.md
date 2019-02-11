@@ -30,7 +30,7 @@ $ git clone https://github.com/pydsgz/DeepVOG
 $ cd ~/DeepVOG/
 $ python setup.py install
 ```
-If it happens to be missing some dependencies listed above, you may install them with pip: {br/}
+If it happens to be missing some dependencies listed above, you may install them with pip: <br/>
 ```
 $ pip install numpy
 $ pip install scikit-video
@@ -52,14 +52,14 @@ tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
 tui.run()
 ```
 
-If it is successful, you should see the interface. <br/>
+If it is successful, you should see the interface: <br/>
 
 <p align="center"> 
 <img src="https://i.imgur.com/0zc13mv.png">
 </p>
 From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
 
-For docker users, you may call the command below:<br/>
+For docker users, you may call interface by the command below:<br/>
 ```
 $ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
 or
@@ -85,15 +85,29 @@ For organization of data, it is recommended the base_dir follows the structure a
 For more flexibility, you may import the module directly in python.
 ```python
 import deepvog
-model = deepvog.load_DeepVOG() # Load our pretrained deep-learning model
-inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) # it requires information of your camera's focal length and sensor size, which should be available in product manual. 
-inferer.fit("video_1.mp4")
-inferer.predict("video_1.mp4", "result_video_1.csv" ) # infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
-inferer.save_eyeball_model("video_1_model.json") # You may also save the eyeball model for gaze inference on videos obtained in the same experiment settings
-inferer.load_eyeball_model("video_1_model.json") # By loading the eyeball model, you don't need to fit the model again with inferer.fit("video_1.mp4")
 
+# Load model
+model = deepvog.load_DeepVOG()
+
+# Initialize the class. It requires information of your camera's focal length and sensor size, which should be available in product manual.
+inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) 
+
+# Fit an eyeball model from "video_1.mp4". The model will be stored as the "inferer" instance's attribute.
+inferer.fit("video_1.mp4")
+
+# After fitting, infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
+inferer.predict("video_1.mp4", "result_video_1.csv" )
+
+# Optional
+
+# You may also save the eyeball model to "video_1_mode.json" for subsequent gaze inference
+inferer.save_eyeball_model("video_1_model.json") 
+
+# By loading the eyeball model, you don't need to fit the model again with inferer.fit("video_1.mp4")
+inferer.load_eyeball_model("video_1_model.json") 
 
 ```
+
 ## Publication and Citation
 
 If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
