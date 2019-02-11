@@ -59,7 +59,7 @@ If it is successful, you should see the interface: <br/>
 </p>
 From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
 
-For docker users, you may call interface by the command below:<br/>
+For docker users, you may call the interface by the command below:<br/>
 ```
 $ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
 or
