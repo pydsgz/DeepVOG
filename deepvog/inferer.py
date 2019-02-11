@@ -24,7 +24,7 @@ Ensure video has:
 
 
 class gaze_inferer(object):
-    def __init__(self, model, flen, ori_video_shape, sensor_size, crop_size = None):
+    def __init__(self, model, flen, ori_video_shape, sensor_size):
         """
         Initialize necessary parameters and load deep_learning model
         
@@ -44,7 +44,7 @@ class gaze_inferer(object):
             assert ((isinstance(flen, int) or isinstance(flen, float)))
             assert (isinstance(ori_video_shape, tuple) or isinstance(ori_video_shape, list) or isinstance(ori_video_shape, np.ndarray))
             assert (isinstance(sensor_size, tuple) or isinstance(sensor_size, list) or isinstance(sensor_size, np.ndarray))
-            assert (isinstance(sensor_size, tuple) or isinstance(sensor_size, list) or isinstance(sensor_size, np.ndarray) or (crop_size is None))
+            assert (isinstance(sensor_size, tuple) or isinstance(sensor_size, list) or isinstance(sensor_size, np.ndarray) )
         except AssertionError:
             print("At least one of your arguments does not have correct type")
             raise TypeError
@@ -52,7 +52,6 @@ class gaze_inferer(object):
         # Parameters dealing with camera and video shape
         self.flen = flen
         self.ori_video_shape, self.sensor_size = np.array(ori_video_shape).squeeze(), np.array(sensor_size).squeeze()
-        self.crop_size = crop_size
         self.mm2px_scaling = np.linalg.norm(self.ori_video_shape)/np.linalg.norm(self.sensor_size)
         
 
@@ -62,9 +61,15 @@ class gaze_inferer(object):
                                          pupil_radius= 2 * self.mm2px_scaling,
                                          initial_eye_z= 50 * self.mm2px_scaling)
 
-    def fit(self, video_src, duration = None, batch_size = 32, print_prefix=""):
+    def fit(self, video_src, batch_size = 32, print_prefix=""):
         """
-        Fitting an eyeball model from video_src
+        Fitting an eyeball model from video_src. After calling this method, eyeball model is stored as the attribute of the instance. 
+        After fitting, you can either call .save_eyeball_model() to save the model for later use, or directly call .predict() for gaze inference
+
+        Args:
+            video_src (str): Path to the video by which you want to fit an eyeball model
+            batch_size (int): Batch size for each forward pass in neural network
+            print_prefix (str): Printing out identifier in case you need
         """
         video_name_root, ext, vreader, (fitvid_m, fitvid_w, fitvid_h, fitvid_channels), shape_correct, image_scaling_factor = self._get_video_info(video_src)
         
@@ -115,6 +120,12 @@ class gaze_inferer(object):
         """
         Inferring gaze directions from video_src and write the records (.csv) to output_record. 
         Eyeball model has to be initialized first, either by calling self.fit() method, or by loading it from path with self.load_eyeball_model()
+        
+        Args:
+            video_src (str): Path to the video from which you want to infer the gaze direction
+            output_record (str): Path to the .csv file where you want to save the result data (e.g. pupil centre coordinates and gaze estimates)
+            batch_size (int): Batch size for each forward pass in neural network
+            print_prefix (str): Printing out identifier in case you need
         """
         try:
             assert isinstance(self.eyefitter.eye_centre, np.ndarray)
