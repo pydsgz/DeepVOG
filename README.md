@@ -36,7 +36,7 @@ $ pip install numpy
 $ pip install scikit-video
 $ ...
 ```
-2. If you are familiar with docker, you can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
+2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
 $ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.0.0 bash
