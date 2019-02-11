@@ -41,7 +41,7 @@ $ ...
 ```
 $ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.0.0 bash
 or
-$ nvidia-docker run -it --rm yyhho/deepvog:v1.0.0 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.0.0 bash
 ```
 
 ### Usage (Text-based user interface)
@@ -72,7 +72,7 @@ Result:<br/>
 ![https://i.imgur.com/0zc13mv.png](https://i.imgur.com/0zc13mv.png)<br/>
 From now on, you can follow the instruction within the interface and do offline analysis on your videos.<br/>
 
-For docker user, you may call the command below:<br/>
+For docker users, you may call the command below:<br/>
 ```
 $ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
 or
