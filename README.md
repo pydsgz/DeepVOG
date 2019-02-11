@@ -13,11 +13,11 @@ These instructions will get you a copy of the project up and running on your loc
 To run DeepVOG, you need to have a Python distribution (we recommend [Anaconda](https://www.anaconda.com/)) and the following Python packages:
 
 ```
-numpy >= 1.12
-scikit-video >=1.1.0
-scikit-image >= 0.14.0
-tensorflow-gpu >= 1.12.0
-keras >= 2.2.4
+numpy
+scikit-video
+scikit-image
+tensorflow-gpu
+keras
 urwid
 ```
 As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker (or nvidia runtime of docker).
@@ -93,8 +93,10 @@ inferer.predict("video_1.mp4", "result_video_1.csv" ) # infer gaze from "video_1
 If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
 
 Links to other papers:
-
-
+- [U-Net: Convolutional Networks for Biomedical Image Segmentation
+](https://arxiv.org/abs/1505.04597)
+- [V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation](https://arxiv.org/abs/1606.04797)
+- [A fully-automatic, temporal approach to single camera, glint-free 3D eye model fitting](https://www.cl.cam.ac.uk/research/rainbow/projects/eyemodelfit/)
 ## Authors
 
 * **Yiu Yuk Hoi** - *Implementation and validation*
