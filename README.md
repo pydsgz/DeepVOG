@@ -65,9 +65,9 @@ $ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/dee
 or
 $ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
 ```
-DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it can estimate the gaze direction on other videos. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. For clinical use, users may want to have a separate clip where the subject performed a calibration paradigm, specifically for model fitting. <br/>
+DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it estimates the gaze direction on any other videos if the relative position of the eye to the camera remains the same. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. However, for clinical use, some users may want to have a more accurate estimate by having a separate fitting clip where the subjects perform a calibration paradigm. <br/>
 
-For organization of data, it is recommended the base_dir follows the structure below: <br/>
+For organization of data, it is recommended the base_dir follows the structure as belows: <br/>
 ```
 /base_dir
     /fitting_dir # which contains video clips for estimating an 3D eyeball model
