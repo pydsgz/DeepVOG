@@ -51,6 +51,20 @@ import deepvog
 tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
 tui.run()
 ```
+
+If it is successful, you should see the interface<br/>
+
+<p align="center"> 
+<img width="320" height="240" src="https://i.imgur.com/0zc13mv.png">
+</p>
+From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
+
+For docker users, you may call the command below:<br/>
+```
+$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+or
+$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+```
 DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it can estimate the gaze direction on other videos. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. For clinical use, users may want to have a separate clip where the subject performed a calibration paradigm, specifically for model fitting. <br/>
 
 For organization of data, it is recommended the base_dir follows the structure below: <br/>
@@ -67,18 +81,6 @@ For organization of data, it is recommended the base_dir follows the structure b
     /results_dir # which will store the gaze results (.csv) inferred based on the 3D eyeball model.
         
 ```
-
-Result:<br/>
-![https://i.imgur.com/0zc13mv.png](https://i.imgur.com/0zc13mv.png)<br/>
-From now on, you can follow the instruction within the interface and do offline analysis on your videos.<br/>
-
-For docker users, you may call the command below:<br/>
-```
-$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
-or
-$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
-```
-
 ### Usage (As a python module)
 For more flexibility, you may import the module directly in python.
 ```python
