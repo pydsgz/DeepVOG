@@ -27,7 +27,10 @@ A step by step series of examples that tell you how to get DeepVOG running.<br/>
 
 ```
 $ git clone https://github.com/pydsgz/DeepVOG
-$ cd ~/DeepVOG/
+ (or you can download the files in this repo with your browser)
+```
+Move to the directory of DeepVOG that you just cloned/downloaded, and type
+```
 $ python setup.py install
 ```
 If it happens to be missing some dependencies listed above, you may install them with pip: <br/>
