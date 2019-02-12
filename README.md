@@ -86,7 +86,7 @@ For more flexibility, you may import the module directly in python.
 ```python
 import deepvog
 
-# Load model
+# Load our pre-trained network
 model = deepvog.load_DeepVOG()
 
 # Initialize the class. It requires information of your camera's focal length and sensor size, which should be available in product manual.
