@@ -51,7 +51,7 @@ After installation, type in your terminal/cmd:
 ```
 $ python -m deepvog -h
 ```
-If sucessful, it will show you a simple documentation and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
+If sucessful, it will show you a simple documentation ([help](https://github.com/pydsgz/DeepVOG/blob/master/deepvog/__main__.py)) and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
 ```
 usage: __main__.py [-h] [--fit VIDEO_SRC MODEL_PATH]
                    [--infer VIDEO_SRC MODEL_SRC RESULTS_PATH]
