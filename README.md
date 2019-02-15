@@ -51,7 +51,7 @@ After installation, type in your terminal/cmd:
 ```
 $ python -m deepvog -h
 ```
-If sucessful, it will show you a simple documentation ([help](https://github.com/pydsgz/DeepVOG/blob/master/deepvog/__main__.py)) and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
+If sucessful, it will show you a simple documentation (see [help](https://github.com/pydsgz/DeepVOG/blob/master/deepvog/__main__.py)) and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
 ```
 usage: __main__.py [-h] [--fit VIDEO_SRC MODEL_PATH]
                    [--infer VIDEO_SRC MODEL_SRC RESULTS_PATH]
@@ -93,9 +93,9 @@ From now on, you can follow the instructions within the interface and do offline
 
 For docker users, you may call the interface by the command below:<br/>
 ```
-$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.1.0 bash deepvog
 or
-$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.0.0 bash deepvog
+$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.1.0 bash deepvog
 ```
 DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it estimates the gaze direction on any other videos if the relative position of the eye to the camera remains the same. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. However, for clinical use, some users may want to have a more accurate estimate by having a separate fitting clip where the subjects perform a calibration paradigm. <br/>
 
