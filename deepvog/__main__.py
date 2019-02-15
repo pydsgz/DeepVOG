@@ -9,10 +9,10 @@ description_text = """
 Belows are the examples of usage. Don't forget to set up camera parameters such as focal length, because it varies from equipment to equipment and is necessaray for accuracy.
 
     Example #1 - Fitting an eyeball model (using default camera parameters)
-    python -m deepvog --fit ~/video01.mp4 ~/subject01.json
+    python -m deepvog --fit ~/video01.mp4 ~/model01.json
 
     Example #2 - Infer gaze (using default camera parameters)
-    python -m deepvog --infer ~/video01.mp4 ~/subject01.json ~/subject01_video01.csv
+    python -m deepvog --infer ~/video01.mp4 ~/model01.json ~/model1_video01.csv
 
     Example #3 - Setting up necessary parameters (focal length = 12mm, video shape = (240,320), ... etc)
     python -m deepvog --fit ./vid.mp4 ./model.json -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
