@@ -2,7 +2,10 @@ import os
 from .model.DeepVOG_model import load_DeepVOG
 from .inferer import gaze_inferer
 from ast import literal_eval
+<<<<<<< HEAD
 from .utils import csv_reader
+=======
+>>>>>>> a0984e4600ff68e6d564d554242dffa101e1c0c8
 
 class deepvog_jobman_CLI(object):
     def __init__(self, gpu_num, flen, ori_video_shape, sensor_size, batch_size):
@@ -33,6 +36,7 @@ class deepvog_jobman_CLI(object):
         inferer = gaze_inferer(self.model, self.flen, self.ori_video_shape, self.sensor_size)
         inferer.load_eyeball_model(eyeball_model_path)
         inferer.predict( video_scr, record_path, batch_size=self.batch_size, print_prefix=print_prefix)
+<<<<<<< HEAD
 
 class deepvog_jobman_table_CLI(deepvog_jobman_CLI):
     def __init__(self, csv_path, gpu_num, flen, ori_video_shape, sensor_size, batch_size):
@@ -60,6 +64,9 @@ class deepvog_jobman_table_CLI(deepvog_jobman_CLI):
             elif current_operation == "both":
                 self.fit(self.csv_dict['fit_vid'][i], self.csv_dict['eyeball_model'][i], print_prefix = progress)
                 self.infer(self.csv_dict['eyeball_model'][i], self.csv_dict['infer_vid'][i], self.csv_dict['result'][i], print_prefix = progress)
+=======
+        
+>>>>>>> a0984e4600ff68e6d564d554242dffa101e1c0c8
 class deepvog_jobman_TUI(deepvog_jobman_CLI):
     def __init__(self, gpu_num, flen, ori_video_shape, sensor_size, batch_size):
         """

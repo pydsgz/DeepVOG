@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="deepvog",
-    version="1.0.0",
+    version="1.1.0",
     author="Yuk-Hoi Yiu et al.",
     author_email="h.yiu@campus.lmu.de",
     description="Deep VOG for gaze estimation",
@@ -34,7 +34,8 @@ setuptools.setup(
                       'scikit-video>=1.1.0',
                       'scikit-image>=0.14.0',
                       'tensorflow-gpu>=1.12.0',
-                      'keras>=2.2.4'],
+                      'keras>=2.2.4',
+                      'urwid'],
 
     
 )
