@@ -8,6 +8,7 @@ from .model.DeepVOG_model import load_DeepVOG
 from .inferer import gaze_inferer
 from .utils import save_json, load_json
 from .tui_description import instruction_listwalker, aboutus_listwalker
+from .jobman import deepvog_jobman_TUI as deepvog_jobman
 from glob import glob
 from ast import literal_eval
 
@@ -37,28 +38,6 @@ class CheckboxStorer(object):
     def get_box(self, key):
         return self.boxes[key]
 
-class deepvog_jobman(object):
-    def __init__(self, gpu_num, flen, ori_video_shape, sensor_size, batch_size):
-        os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
-        os.environ["CUDA_VISIBLE_DEVICES"]=str(gpu_num)
-        self.model = load_DeepVOG()
-        self.flen = float(flen)
-        self.ori_video_shape = literal_eval(ori_video_shape)
-        self.sensor_size = literal_eval(sensor_size)
-        self.batch_size = int(batch_size)
-    def fit(self, vid_path, output_json_path, print_prefix=""):
-        inferer = gaze_inferer(self.model, self.flen, self.ori_video_shape, self.sensor_size)
-        inferer.fit(vid_path, batch_size = self.batch_size, print_prefix=print_prefix)
-        inferer.save_eyeball_model(output_json_path) 
-
-    def infer(self, eyeball_model_path, video_scr, record_dir, print_prefix=""):
-        video_name_root = os.path.splitext(os.path.split(video_scr)[1])[0]
-        eyeball_model_name_root = os.path.splitext(os.path.split(eyeball_model_path)[1])[0]
-        record_name = "fit-{}_infer-{}.csv".format(eyeball_model_name_root, video_name_root)
-        record_path = os.path.join(record_dir, record_name)
-        inferer = gaze_inferer(self.model, self.flen, self.ori_video_shape, self.sensor_size)
-        inferer.load_eyeball_model(eyeball_model_path)
-        inferer.predict( video_scr, record_path, batch_size=self.batch_size, print_prefix=print_prefix)
 
 class deepvog_tui(object):
     def __init__(self, base_dir):
@@ -463,7 +442,7 @@ class deepvog_tui(object):
         models_paths, models_names = self.grab_paths_and_names(self.get_models_dir(), ".json")
         infer_vids_paths, infer_vids_names = self.grab_paths_and_names(self.get_inference_dir())
         if new_state ==True:
-            self.update_all_models_and_infervids((models_names, models_names), (infer_vids_paths, infer_vids_names))
+            self.update_all_models_and_infervids((models_paths, models_names), (infer_vids_paths, infer_vids_names))
             self.update_model_checkboxes()
         if new_state ==False:
             self.inference_dict = dict()
