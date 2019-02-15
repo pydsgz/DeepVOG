@@ -42,9 +42,9 @@ $ ...
 2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
-$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.0.0 bash
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.0 bash
 or
-$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.0.0 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.0 bash
 ```
 ### Usage (Command-line interface)
 After installation, type in your terminal/cmd:
