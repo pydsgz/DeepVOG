@@ -47,33 +47,17 @@ or
 $ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.0 bash
 ```
 ### Usage (Command-line interface)
-After installation, type in your terminal/cmd:
+The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv table. They can be simply called by:
 ```
-$ python -m deepvog -h
+$ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json
+$ python -m deepvog --infer ./video_infer.mp4 ./video_fit.json ./results.csv
+$ python -m deepvog --table ./list_of_operations.csv
 ```
-If sucessful, it will show you a simple documentation (see [help](https://github.com/pydsgz/DeepVOG/blob/master/deepvog/__main__.py)) and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
+Of course, you will need to specify your camera parameters such as focal length.
 ```
-usage: __main__.py [-h] [--fit VIDEO_SRC MODEL_PATH]
-                   [--infer VIDEO_SRC MODEL_SRC RESULTS_PATH]
-                   [--table CSV_PATH] [-f FOCAL_LENGTH] [-g GPU_NUMBER]
-                   [-vs HEIGHT WIDTH] [-s HEIGHT WIDTH] [-b BATCH_SIZE]
-
-Belows are the examples of usage. Don't forget to set up camera parameters such as focal length, because it varies from equipment to equipment and is necessaray for accuracy.
-
-    Example #1 - Fitting an eyeball model (using default camera parameters)
-    python -m deepvog --fit ~/video01.mp4 ~/model01.json
-
-    Example #2 - Infer gaze (using default camera parameters)
-    python -m deepvog --infer ~/video01.mp4 ~/model01.json ~/model01_video01.csv
-
-...
-
-You can also fit and infer a video from a csv table (see further below for specficifications):
-
-    Example #5
-    python -m deepvog --table ./table.csv -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
-...
+$ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
 ```
+For the meaning of arguments, sepcification of the csv table or further usage examples, you can type "python -m deepvog -h" for more detailed information.
 
 
 ### Usage (Text-based user interface)
