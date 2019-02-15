@@ -53,7 +53,9 @@ $ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json
 $ python -m deepvog --infer ./video_infer.mp4 ./video_fit.json ./results.csv
 $ python -m deepvog --table ./list_of_operations.csv
 ```
-Of course, you will need to specify your camera parameters such as focal length.
+DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it estimates the gaze direction on any other videos if the relative position of the eye with respect to the camera remains the same. It has no problem that you fit an eyeball model and infer the gaze directions from the same video clip. However, for clinical use, some users may want to have a more accurate estimate by having a separate fitting clip where the subjects perform a calibration paradigm. <br/>
+
+In addition, you will need to specify your camera parameters such as focal length, if your parameters differ from default values (see the argument defaults in "python -m deepvog -h").
 ```
 $ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
 ```
@@ -81,22 +83,8 @@ $ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/dee
 or
 $ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.1.0 bash deepvog
 ```
-DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it estimates the gaze direction on any other videos if the relative position of the eye to the camera remains the same. It has no problem that you fit an eyeball model and infer the gaze directions both from the same video clip. However, for clinical use, some users may want to have a more accurate estimate by having a separate fitting clip where the subjects perform a calibration paradigm. <br/>
 
-For organization of data, it is recommended the base_dir follows the structure as belows: <br/>
-```
-/base_dir
-    /fitting_dir # which contains video clips for estimating an 3D eyeball model
-        /video_1.mp4
-        /video_2.mp4
-        /...
-    /model_dir # which will store the eyeball models fitted by the program
-    /inference_dir # which contain video clips on which you want to infer the gaze directions
-        /video_3.mp4
-        /...
-    /results_dir # which will store the gaze results (.csv) inferred based on the 3D eyeball model.
-        
-```
+
 ### Usage (As a python module)
 For more flexibility, you may import the module directly in python.
 ```python
