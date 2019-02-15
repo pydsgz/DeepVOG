@@ -34,5 +34,22 @@ def load_json(path):
         json_str = fh.read()
     return json.loads(json_str)
 
+def csv_reader(csv_path):
+    col_dict = dict()
+    col_list = []
+    with open(csv_path, "r") as fh:
+        for idx, line in enumerate(fh):
+            row = line.split(",")
+            row_stripped = list(map(lambda x : x.strip(), row))
+            if idx == 0:
+                for col in row_stripped:
+                    col_list.append(col)
+                    col_dict[str(col)] = []
+            else:
+                for col_idx, col in enumerate(row_stripped):
+                    col_dict[col_list[col_idx]].append(str(col))
+    return col_dict
+
+
 if __name__ == "__main__":
     pass

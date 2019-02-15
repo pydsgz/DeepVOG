@@ -90,7 +90,7 @@ class gaze_inferer(object):
             mini_batch_idx = idx % batch_size
             if ((mini_batch_idx != 0) and (idx < final_batch_idx)) or (idx == 0):
                 X_batch[mini_batch_idx, :, :, :] = frame_preprocessed
-            elif ((mini_batch_idx == 0) and (idx < final_batch_idx)):
+            elif ((mini_batch_idx == 0) and (idx < final_batch_idx) or (idx == final_batch_idx)):
                 Y_batch = self.model.predict(X_batch)
                 self._fitting_batch(Y_batch)
                 # self._write_batch(Y_batch) # Just for debugging
@@ -141,7 +141,8 @@ class gaze_inferer(object):
         self.eyefitter.focal_length = self.flen*self.mm2px_scaling * image_scaling_factor
         self.eyefitter.pupil_radius = 2 * self.mm2px_scaling * image_scaling_factor
         
-        final_batch_idx = infervid_m - (infervid_m % batch_size) 
+        final_batch_size = infervid_m % batch_size
+        final_batch_idx = infervid_m - final_batch_size
         X_batch = np.zeros((batch_size, 240, 320, 3))
         X_batch_final = np.zeros((infervid_m % batch_size, 240, 320, 3))
         for idx, frame in enumerate(vreader.nextFrame()):
@@ -155,10 +156,10 @@ class gaze_inferer(object):
                 X_batch[mini_batch_idx, :, :, :] = frame_preprocessed
 
             # After reaching the batch size, but not the final batch, predict and infer angles
-            elif ((mini_batch_idx == 0) and (idx < final_batch_idx)):
+            elif ((mini_batch_idx == 0) and (idx < final_batch_idx) or (idx == final_batch_idx)):
                 Y_batch = self.model.predict(X_batch)
                 # =============== infer angles by batch here ====================
-                positions, gaze_angles, inference_confidence = self._infer_batch(Y_batch, idx)
+                positions, gaze_angles, inference_confidence = self._infer_batch(Y_batch, idx-batch_size)
                 X_batch = np.zeros((batch_size, 240, 320, 3))
                 X_batch[mini_batch_idx, :, :, :] = frame_preprocessed
 
@@ -172,7 +173,10 @@ class gaze_inferer(object):
                 X_batch_final[idx - final_batch_idx, :, :, :] = frame_preprocessed
                 Y_batch = self.model.predict(X_batch_final)
                 # =============== infer angles by batch here ====================
-                positions, gaze_angles, inference_confidence = self._infer_batch(Y_batch, idx)
+                positions, gaze_angles, inference_confidence = self._infer_batch(Y_batch, idx - final_batch_size)
+            else:
+                import pdb
+                pdb.set_trace()
         self.results_recorder.close()
         print()
     def save_eyeball_model(self, path):
