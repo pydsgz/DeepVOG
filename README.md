@@ -51,7 +51,7 @@ After installation, type in your terminal/cmd:
 ```
 $ python -m deepvog -h
 ```
-If sucessful, it will show you a simple documentation and examples of how to use the commands:
+If sucessful, it will show you a simple documentation and examples of how to use the commands. The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv:
 ```
 usage: __main__.py [-h] [--fit VIDEO_SRC MODEL_PATH]
                    [--infer VIDEO_SRC MODEL_SRC RESULTS_PATH]
@@ -68,7 +68,7 @@ Belows are the examples of usage. Don't forget to set up camera parameters such 
 
 ...
 
-You can also fit and infer a video from a csv table:
+You can also fit and infer a video from a csv table (see further below for specficifications):
 
     Example #5
     python -m deepvog --table ./table.csv -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
