@@ -18,7 +18,7 @@ scikit-video
 scikit-image
 tensorflow-gpu
 keras
-urwid
+urwid (Not necessary if you do not use the Text-based user interface)
 ```
 As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker (or nvidia runtime of docker).
 ### Installing
@@ -42,32 +42,30 @@ $ ...
 2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
-$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.0 bash
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.1 bash
 or
-$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.0 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.1 bash
 ```
 ### Usage (Command-line interface)
-The CLI allows you to fit/infer single video or do it in a batch-wise manner by importing a csv table. They can be simply called by:
+The CLI allows you to fit/infer single video, or multiple of them by importing a csv table. They can be simply called by:
 ```
-$ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json
-$ python -m deepvog --infer ./video_infer.mp4 ./video_fit.json ./results.csv
-$ python -m deepvog --table ./list_of_operations.csv
+$ python -m deepvog --fit /PATH/video_fit.mp4 /PATH/eyeball_model.json
+$ python -m deepvog --infer /PATH/video_infer.mp4 /PATH/eyeball_model.json /PATH/results.csv
+$ python -m deepvog --table /PATH/list_of_operations.csv
 ```
 DeepVOG first fits a 3D eyeball model from a video clip. Base on the eyeball model, it estimates the gaze direction on any other videos if the relative position of the eye with respect to the camera remains the same. It has no problem that you fit an eyeball model and infer the gaze directions from the same video clip. However, for clinical use, some users may want to have a more accurate estimate by having a separate fitting clip where the subjects perform a calibration paradigm. <br/>
 
-In addition, you will need to specify your camera parameters such as focal length, if your parameters differ from default values (see the argument defaults in "python -m deepvog -h").
+In addition, you will need to specify your camera parameters such as focal length, if your parameters differ from default values.
 ```
-$ python -m deepvog --fit ./video_fit.mp4 ./video_fit.json -f 12 -vs 240 320 -s 3.6 4.8 -b 32 -g 0
+$ python -m deepvog --fit /PATH/video_fit.mp4 /PATH/eyeball_model.json --flen 12 --vid-shape 240,320 --sensor 3.6,4.8 --batchsize 32 --gpu 0
 ```
-For the meaning of arguments, sepcification of the csv table or further usage examples, you can type "python -m deepvog -h" for more detailed information.
+Please refer to [doc/documentation.md](doc/documentation.md) for the meaning of arguments and input/output formats. Alternatively, you can also type `$ python -m deepvog -h` for usage examples.
 
 
 ### Usage (Text-based user interface)
-DeepVOG comes with a simple text-based user interface (TUI). After installation, you can simply call in python:
-```python
-import deepvog
-tui = deepvog.tui(base_dir) # base_dir is where you put your video data.
-tui.run()
+DeepVOG comes with a simple text-based user interface (TUI). After installation, you can simply type in terminal:
+```
+$ python -m deepvog --tui
 ```
 
 If it is successful, you should see the interface: <br/>
@@ -77,12 +75,7 @@ If it is successful, you should see the interface: <br/>
 </p>
 From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
 
-For docker users, you may call the interface by the command below:<br/>
-```
-$ docker run --runtime=nvidia -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.1.0 bash deepvog
-or
-$ nvidia-docker run -it --rm -v /path_to_your_base_dir:/mnt yyhhoi/deepvog:v1.1.0 bash deepvog
-```
+
 
 
 ### Usage (As a python module)

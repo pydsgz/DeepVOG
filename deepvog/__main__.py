@@ -1,6 +1,6 @@
 import argparse
 from argparse import RawTextHelpFormatter
-
+from ast import literal_eval
 
 # Running DeepVOG with command-line parser.
 
@@ -47,6 +47,7 @@ If you run it in docker and mount your local directory, you should specify the a
 fit_help = "Fitting an eyeball model. Call with --fit [video_src_path] [eyeball_model_saving_path]."
 infer_help = "Inter video from eyeball model. Call with --infer [video_scr_path] [eyeball_model_path] [results_saving_path]"
 table_help = 'Fit or infer videos from a csv table. The column names of the csv must follow a format (see --help description). Call with --table [csv_path]'
+tui_help = "Open Text-Based User interface (TUI)"
 ori_vid_shape_help = 'Original and uncropped video shape of your camera output, height and width in pixel. Default = 240 320'
 flen_help = 'Focal length of your camera in mm.'
 gpu_help = 'GPU device number. Default = 0'
@@ -56,48 +57,55 @@ batch_help = 'Batch size for forward inference. Default = 512.'
 
 parser = argparse.ArgumentParser(description= description_text, formatter_class=RawTextHelpFormatter)
 required = parser.add_argument_group('required arguments')
-required.add_argument("--fit", help = fit_help, nargs=2, type = str, metavar=("VIDEO_SRC","MODEL_PATH"))
-required.add_argument("--infer", help = infer_help, nargs=3, type=str, metavar=("VIDEO_SRC","MODEL_SRC", "RESULTS_PATH"))
-required.add_argument("--table", help = table_help, type=str, metavar = ("CSV_PATH"))
-parser.add_argument("-f", "--flen", help = flen_help, default = 6, type = float, metavar=("FOCAL_LENGTH"))
-parser.add_argument("-g", "--gpu", help = gpu_help, default= "0", type = str, metavar= ("GPU_NUMBER"))
-parser.add_argument("-vs" ,"--vidshape", help = ori_vid_shape_help, default= (240, 320), nargs=2, type = int, metavar=("HEIGHT", "WIDTH"))
-parser.add_argument("-s", "--sensor", help = sensor_help, default= (3.6, 4.8), nargs=2, type = float, metavar=("HEIGHT", "WIDTH"))
-parser.add_argument("-b", "--batchsize", help = batch_help, default= 512, type = int, metavar=("BATCH_SIZE"))
+required.add_argument("--fit", help = fit_help, nargs=2, type = str, metavar=("PATH","PATH"))
+required.add_argument("--infer", help = infer_help, nargs=3, type=str, metavar=("PATH","PATH", "PATH"))
+required.add_argument("--table", help = table_help, type=str, metavar = ("PATH"))
+required.add_argument('--tui', help = tui_help, type=str, metavar=("DIRECTORY"))
+parser.add_argument("-f", "--flen", help = flen_help, default = 6, type = float, metavar=("FLOAT"))
+parser.add_argument("-g", "--gpu", help = gpu_help, default= "0", type = str, metavar= ("INT"))
+parser.add_argument("-vs" ,"--vidshape", help = ori_vid_shape_help, default= "(240, 320)", type = str, metavar=("INT,INT"))
+parser.add_argument("-s", "--sensor", help = sensor_help, default= "(3.6, 4.8)", type = str, metavar=("FLOAT,FLOAT"))
+parser.add_argument("-b", "--batchsize", help = batch_help, default= 512, type = int, metavar=("INT"))
 
 args = parser.parse_args()
 
-if (args.fit is None) and (args.infer is None) and (args.table is None):
-    parser.error("Either --fit, --infer or --table argument is requried")
+# Check there is EXACTLY one argument from --fit, --infer, --table and --tui
+all_modes_list = [args.fit, args.infer, args.table, args.tui]
+cli_modes_list = all_modes_list[0:3]
+num_modes = sum([x is not None for x in all_modes_list])
+if num_modes != 1:
+    parser.error("Exactly one argument from --fit, --infer, --table and --tui is requried")
     
-    
-from .jobman import deepvog_jobman_CLI, deepvog_jobman_table_CLI
-
-flen = args.flen
-gpu = args.gpu
-ori_video_shape = args.vidshape
-sensor_size = args.sensor
-batch_size = args.batchsize
-
-if args.table is not None:
-    jobman_table = deepvog_jobman_table_CLI(args.table, gpu, flen, ori_video_shape, sensor_size, batch_size)
-    jobman_table.run_batch()
-
 else:
 
-    jobman = deepvog_jobman_CLI(gpu, flen, ori_video_shape, sensor_size, batch_size)
+    # Text-based user interface mode
+    if args.tui is not None:
+        from .deepvog_tui import deepvog_tui
+        tui = deepvog_tui(args.tui)
+        tui.run_tui()
 
+    # Command line mode
+    if sum([x is not None for x in cli_modes_list]) >0:
 
-    if (args.fit is not None) and (args.infer is None):
-        vid_src_fitting, eyemodel_save = args.fit
-        jobman.fit(vid_src_fitting, eyemodel_save)
-    if (args.fit is None) and (args.infer is not None):
-        vid_scr_inference, eyemodel_load, result_output = args.infer
-        jobman.infer(eyemodel_load, vid_scr_inference, result_output)
-    if (args.fit is not None) and (args.infer is not None):
-        vid_scr_inference, eyemodel_load, result_output = args.infer
-        vid_src_fitting, eyemodel_save = args.fit
-        jobman.fit(vid_src_fitting, eyemodel_save)
-        jobman.infer(eyemodel_load, vid_scr_inference, result_output)
+        from .jobman import deepvog_jobman_CLI, deepvog_jobman_table_CLI
+        flen = args.flen
+        gpu = args.gpu
+        ori_video_shape = literal_eval(args.vidshape)
+        sensor_size = literal_eval(args.sensor)
+        batch_size = args.batchsize
+
+        # Table mode
+        if args.table is not None:
+            jobman_table = deepvog_jobman_table_CLI(args.table, gpu, flen, ori_video_shape, sensor_size, batch_size)
+            jobman_table.run_batch()
+
+        # Fit or Infer mode
+        jobman = deepvog_jobman_CLI(gpu, flen, ori_video_shape, sensor_size, batch_size)
+        if args.fit is not None:
+            vid_src_fitting, eyemodel_save = args.fit
+            jobman.fit(vid_src_fitting, eyemodel_save)
+        if args.infer is not None:
+            vid_scr_inference, eyemodel_load, result_output = args.infer
+            jobman.infer(eyemodel_load, vid_scr_inference, result_output)
 
     
