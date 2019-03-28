@@ -109,16 +109,17 @@ inferer.load_eyeball_model("video_1_model.json")
 
 If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
 
-Links to other papers:
-- [U-Net: Convolutional Networks for Biomedical Image Segmentation
-](https://arxiv.org/abs/1505.04597)
-- [V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation](https://arxiv.org/abs/1606.04797)
-- [A fully-automatic, temporal approach to single camera, glint-free 3D eye model fitting](https://www.cl.cam.ac.uk/research/rainbow/projects/eyemodelfit/)
 ## Authors
 
 * **Yiu Yuk Hoi** - *Implementation and validation*
 * **Seyed-Ahmad Ahmadi** - *Research study concept*
 * **Moustafa Aboulatta** - *Initial work*
+
+## Links to other related papers
+- [U-Net: Convolutional Networks for Biomedical Image Segmentation
+](https://arxiv.org/abs/1505.04597)
+- [V-Net: Fully Convolutional Neural Networks for Volumetric Medical Image Segmentation](https://arxiv.org/abs/1606.04797)
+- [A fully-automatic, temporal approach to single camera, glint-free 3D eye model fitting](https://www.cl.cam.ac.uk/research/rainbow/projects/eyemodelfit/)
 
 ## License
 
