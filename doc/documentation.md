@@ -10,7 +10,7 @@ DeepVOG works with four modes (fit, infer, table, tui). You can only specify **E
 - `--tui`: Open Text-Based User interface (TUI). It accepts one argument (1) Base directory that you store/will store you videos, eyemodels and output results. The instruction is inside the TUI.
 
 ## Camera intrinsic parameters and others
-Although the default camera intrinsic parameters are given, they vary largely across different cameras. it is very important that you specify the correct values according to the camera that you use to record the videos, otherwise the gaze results will be different. The camera intrinsic parameters can be found in their production manual which is usually available online in the provider's website.
+Although the default camera intrinsic parameters are given, they vary largely across different cameras. it is very important that you specify the correct values according to the camera that you used to record the videos, otherwise the gaze results would be different. The camera intrinsic parameters can be found in their production manual which is usually available online in the provider's website.
 
 - `-f` or `--flen`: Focal length of your camera in **mm**. Default: `6`.
 - `-g` or `--gpu`: GPU device number. Default: `0`.
