@@ -1,6 +1,6 @@
 import numpy as np
 import pdb
-from .draw_ellipse import fit_ellipse_compact
+from .draw_ellipse import fit_ellipse_compact, fit_ellipse
 from .unprojection import convert_ell_to_general, unprojectGazePositions, reproject, reverse_reproject
 from .intersection import NoIntersectionError, intersect,fit_ransac, line_sphere_intersect
 from .CheckEllipse import computeEllipseConfidence
@@ -51,24 +51,28 @@ class SingleEyeFitter(object):
         
         
     def unproject_single_observation(self, prediction, mask=None, threshold = 0.5): 
-    # "prediction" is an numpy array with shape (image_height, image_width) and data type: float [0-1]
-    # Our deeplearning model's outpupt is Y~(240, 320, 3),
-    # you will have to slice it manually as Y[:,:,1] as input to this function.
+        # "prediction" is an numpy array with shape (image_height, image_width) and data type: float [0-1]
+        # Our deeplearning model's outpupt is Y~(240, 320, 3),
+        # you will have to slice it manually as Y[:,:,1] as input to this function.
         try:
             assert len(prediction.shape) == 2
             assert prediction.shape == self.image_shape
         except(AssertionError):
             raise AssertionError("Shape of the observation input has to be (image_height, image_width) specified in the initialization of object, or if default, (240,320)")
         # Fit an ellipse from the prediction map
-        ellipse_info = fit_ellipse_compact(prediction, mask = mask)
-        centre, w, h, radian = None, None, None, None
+        ellipse_info = fit_ellipse(prediction, mask = mask)
+        rr, cc, centre, w, h, radian = None, None, None, None, None, None
         ellipse_confidence = 0
 
         # We unproject the gaze vectors and pupil centre only if an ellipse has been detected
         if ellipse_info is not None:
 
-            (centre, w,h, radian) = ellipse_info
-            ellipse_confidence = computeEllipseConfidence(prediction, centre, w, h, radian)
+            (rr, cc, centre, w, h, radian, ell) = ellipse_info
+            try:
+                ellipse_confidence = computeEllipseConfidence(prediction, centre, w, h, radian)
+            except:
+                pdb.set_trace()
+
 
             # Convert centre coordinates from numpy indexing frame to camera frames
             centre_cam = centre.copy()
@@ -94,7 +98,8 @@ class SingleEyeFitter(object):
             self.current_gaze_pos, self.current_gaze_neg, self.current_pupil_3Dcentre_pos, self.current_pupil_3Dcentre_neg = None, None, None, None
             self.current_ellipse_centre = None
             
-        return self.current_gaze_pos, self.current_gaze_neg, self.current_pupil_3Dcentre_pos, self.current_pupil_3Dcentre_neg , (centre, w, h, radian, ellipse_confidence)
+        return self.current_gaze_pos, self.current_gaze_neg, self.current_pupil_3Dcentre_pos, self.current_pupil_3Dcentre_neg , (rr, cc, centre, w, h, radian, ellipse_confidence)
+
     def add_to_fitting(self):
     # Append parameterised gaze lines for fitting
         if (self.current_gaze_pos is None) or (self.current_gaze_neg is None) or (self.current_pupil_3Dcentre_pos is None) or (self.current_pupil_3Dcentre_neg is None) or (self.current_ellipse_centre is None):
@@ -180,6 +185,7 @@ class SingleEyeFitter(object):
         self.aver_eye_radius = aver_radius
         self.eye_centre = eye_centre_camera_frame
         return aver_radius, radius_counter
+
     def gen_consistent_pupil(self):
         # This function must be called after using unproject_single_observation() to update surrent observation
         if (self.eye_centre is None) or (self.aver_eye_radius is None):
@@ -204,12 +210,14 @@ class SingleEyeFitter(object):
                 self.pupil_new_radius_min, self.pupil_new_radius_max = new_radius_min, new_radius_max
                 self.pupil_new_gaze_min, self.pupil_new_gaze_max = new_gaze_min, new_gaze_max
                 consistence = True
+
             except(NoIntersectionError):
                 # print("Cannot find line-sphere interception. Old pupil parameters are used.")
                 new_position_min, new_position_max = selected_position, selected_position
                 new_gaze_min, new_gaze_max = selected_gaze, selected_gaze
                 new_radius_min, new_radius_max = self.pupil_radius,  self.pupil_radius
                 consistence = False
+
             return [new_position_min, new_position_max], [new_gaze_min, new_gaze_max], [new_radius_min, new_radius_max], consistence
             
             

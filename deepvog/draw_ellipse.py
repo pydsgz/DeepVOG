@@ -29,7 +29,7 @@ def gen_ellipse_contour_perim(perim, color = "r"):
     # Vertices
     input_points = np.where(perim == 1)
     if (np.unique(input_points[0]).shape[0]) < 6 or (np.unique(input_points[1]).shape[0]< 6) :
-        return None, None, None, None, None, None, None
+        return None
     else:
         try:
             vertices = np.array([input_points[0], input_points[1]]).T
@@ -40,9 +40,9 @@ def gen_ellipse_contour_perim(perim, color = "r"):
             ell = mpl.patches.Ellipse(xy = [center[0],center[1]], width = w*2, height = h*2, angle = np.rad2deg(radian), fill = False, color = color)
             # Because of the np indexing of y-axis, orientation needs to be minus
             rr, cc = ellipse_perimeter(int(np.round(center[0])), int(np.round(center[1])), int(np.round(w)), int(np.round(h)), -radian)
-            return rr, cc, center, w,h, radian, ell
+            return (rr, cc, center, w, h, radian, ell)
         except:
-            return None, None, None, None, None, None, None
+            return None
 
 def gen_ellipse_contour_perim_compact(perim): 
     # Vertices
@@ -61,10 +61,11 @@ def gen_ellipse_contour_perim_compact(perim):
         except:
             return None
 
-def fit_ellipse(img, threshold, color = "r", mask=None):
+def fit_ellipse(img, threshold = 0.5, color = "r", mask=None):
 
     isolated_pred = isolate_islands(img, threshold = threshold)
     perim_pred = bwperim(isolated_pred)
+
     # masking eyelid away from bwperim_output. Currently not available in DeepVOG (But will be used in DeepVOG-3D)
     if mask is not None:
         mask_bool = mask < 0.5
@@ -75,8 +76,9 @@ def fit_ellipse(img, threshold, color = "r", mask=None):
     perim_pred[perim_pred.shape[0]-1, :] = 0
     perim_pred[:, 0] = 0
     perim_pred[:, perim_pred.shape[1]-1] = 0
-    rr, cc, center, w,h,radian, ell = gen_ellipse_contour_perim(perim_pred, color)
-    return rr, cc, center, w,h,radian, ell
+    ellipse_info = gen_ellipse_contour_perim(perim_pred, color)
+
+    return ellipse_info
 
 def fit_ellipse_compact(img, threshold = 0.5, mask=None):
     """Fitting an ellipse to the thresholded pixels which form the largest connected area.
