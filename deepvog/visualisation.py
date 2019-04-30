@@ -116,6 +116,8 @@ class Visualizer(gaze_inferer):
         """
         Overriden from gaze_inferer.predict()
         Added argument : output_vis_path
+
+        It is 99% same with gaze_inferer.predict() method, except with added _infer_vis_batch() method.
         Visualizer._infer_vis_batch() is intended to infer gaze as well as drawing visualisation video output
 
 
