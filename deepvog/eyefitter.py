@@ -67,11 +67,9 @@ class SingleEyeFitter(object):
         # We unproject the gaze vectors and pupil centre only if an ellipse has been detected
         if ellipse_info is not None:
 
-            (rr, cc, centre, w, h, radian, ell) = ellipse_info
-            try:
-                ellipse_confidence = computeEllipseConfidence(prediction, centre, w, h, radian)
-            except:
-                pdb.set_trace()
+            (rr, cc, centre, w, h, radian, ell) = ellipse_info\
+            ellipse_confidence = computeEllipseConfidence(prediction, centre, w, h, radian)
+
 
 
             # Convert centre coordinates from numpy indexing frame to camera frames
