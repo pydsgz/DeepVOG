@@ -50,9 +50,9 @@ $ ...
 2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
-$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.1 bash
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.2 bash
 or
-$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.1 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.2 bash
 ```
 ### Usage (Command-line interface)
 The CLI allows you to fit/infer single video, or multiple of them by importing a csv table. They can be simply called by:

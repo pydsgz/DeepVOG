@@ -263,7 +263,7 @@ class gaze_inferer(object):
         return cropped.shape
 
     @staticmethod
-    def _preprocess_image(img, resizing):
+    def _preprocess_image(img, shape_correct):
         """
         
         Args:
@@ -274,7 +274,7 @@ class gaze_inferer(object):
         output_img = np.zeros((240, 320, 3))
         img = img/255
         img = rgb2gray(img)
-        if resizing == True:
+        if not shape_correct:
             img = resize(img, (240, 320))
         output_img[:,:,:] = img.reshape( 240, 320, 1)
         return output_img
