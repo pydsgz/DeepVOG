@@ -127,13 +127,7 @@ class gaze_inferer(object):
             batch_size (int): Batch size for each forward pass in neural network
             print_prefix (str): Printing out identifier in case you need
         """
-        try:
-            assert isinstance(self.eyefitter.eye_centre, np.ndarray)
-            assert self.eyefitter.eye_centre.shape == (3,1)
-            assert self.eyefitter.aver_eye_radius is not None
-        except AssertionError as e:
-            logging.error("You must initialize 3D eyeball parameters first by fit() function")
-            raise e
+        self._check_eyeball_model_exists()
         self.results_recorder = open(output_record, "w")
         self.results_recorder.write("frame,pupil2D_x,pupil2D_y,gaze_x,gaze_y,confidence,consistence\n")
         video_name_root, ext, vreader, (infervid_m, infervid_w, infervid_h, infervid_channels), shape_correct, image_scaling_factor = self._get_video_info(video_src)
@@ -212,15 +206,16 @@ class gaze_inferer(object):
     def _fitting_batch(self, Y_batch):
         for Y_each in Y_batch:
             pred_each = Y_each[:,:,1]
-            _, _, _, _, (centre, w, h, radian, ellipse_confidence) = self.eyefitter.unproject_single_observation(pred_each)
+            _, _, _, _, (_, _, centre, w, h, radian, ellipse_confidence) = self.eyefitter.unproject_single_observation(pred_each)
             
             if (ellipse_confidence > self.confidence_fitting_threshold) and (centre is not None):
                 self.eyefitter.add_to_fitting()
+
     def _infer_batch(self, Y_batch, idx):
         for batch_idx, Y_each in enumerate(Y_batch):
             frame = idx + batch_idx + 1
             pred_each = Y_each[:,:,1]
-            _, _, _, _, (centre, w, h, radian, ellipse_confidence) = self.eyefitter.unproject_single_observation(pred_each)
+            _, _, _, _, (_, _, centre, w, h, radian, ellipse_confidence) = self.eyefitter.unproject_single_observation(pred_each)
             if centre is not None:
                 p_list, n_list, _, consistence = self.eyefitter.gen_consistent_pupil()
                 p1, n1 = p_list[0], n_list[0]
@@ -238,7 +233,8 @@ class gaze_inferer(object):
                 self.results_recorder.write("%d,%f,%f,%f,%f,%f,%f\n" % (frame, np.nan, np.nan,
                                                                                 np.nan, np.nan,
                                                                                 np.nan, np.nan))
-        return positions, gaze_angles, inference_confidence 
+        return positions, gaze_angles, inference_confidence
+
     def _get_video_info(self, video_src):
         video_name_with_ext = os.path.split(video_src)[1]
         video_name_root, ext = os.path.splitext(video_name_with_ext)
@@ -248,6 +244,14 @@ class gaze_inferer(object):
         shape_correct = self._inspectVideoShape(w, h)
         return video_name_root, ext, vreader, (m, w, h, channels), shape_correct, image_scaling_factor
 
+    def _check_eyeball_model_exists(self):
+        try:
+            assert isinstance(self.eyefitter.eye_centre, np.ndarray)
+            assert self.eyefitter.eye_centre.shape == (3,1)
+            assert self.eyefitter.aver_eye_radius is not None
+        except AssertionError as e:
+            logging.error("You must initialize 3D eyeball parameters first by fit() function")
+            raise e
 
 
     @staticmethod

@@ -19,7 +19,7 @@ class deepvog_jobman_CLI(object):
         os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID" 
         os.environ["CUDA_VISIBLE_DEVICES"]=gpu_num
         self.model = load_DeepVOG()
-        self.flen = flen
+        self.flen = float(flen)
         self.ori_video_shape = ori_video_shape
         self.sensor_size = sensor_size
         self.batch_size = batch_size
