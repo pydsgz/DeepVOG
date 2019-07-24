@@ -29,7 +29,7 @@ urwid (Not necessary if you do not use the Text-based user interface)
 ```
 As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker (or nvidia runtime of docker).
 
-### Installing
+### Installation of Package
 A step by step series of examples that tell you how to get DeepVOG running.<br/>
 1. Installing from package
 
@@ -55,9 +55,9 @@ or
 $ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.3 bash
 ```
 
-### Uninstall
+### Removal of Package
 
-Un-installation can be done by simply deleting the python package, for example:
+Removal can be done by simply deleting the python package, for example:
 ```
 $ rm -r /usr/local/lib/python3.5/dist-packages/deepvog-1.1.2-py3.5.egg
 ``` 
