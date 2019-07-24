@@ -127,10 +127,13 @@ The -v argument draws the visualization of fitted ellipse and gaze vector to a d
 As a result, you shall be able to see the visualization in the generated video "demo_visualization_inference.mp4", as shown below.
 
 <p align="center"> 
-<img width="320" height="240" src="demo/demo_result.png">
+<img width="640" height="240" src="demo/demo_result.png">
 </p>
 
-
+In addtion, you can also test out the --table mode by:
+```
+$ python -m deepvog --table demo_table_mode.csv
+```
  
 
 ## Authors
