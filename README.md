@@ -54,6 +54,16 @@ $ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.3 bash
 or
 $ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.3 bash
 ```
+
+### Uninstall
+
+Un-installation can be done by simply deleting the python package, for example:
+```
+$ rm -r /usr/local/lib/python3.5/dist-packages/deepvog-1.1.2-py3.5.egg
+``` 
+The exact path will depend on where you store your installed python package, and the version of deepvog and python. 
+
+
 ### Usage (Command-line interface)
 The CLI allows you to fit/infer single video, or multiple of them by importing a csv table. They can be simply called by:
 ```
