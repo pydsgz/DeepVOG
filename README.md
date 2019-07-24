@@ -134,7 +134,7 @@ $ python -m deepvog --infer ./demo.mp4 ./demo_eyeball_model.json ./demo_gaze_res
 
 The -v argument draws the visualization of fitted ellipse and gaze vector to a designated video. The -m argument draws the segmented heatmap of pupil side by side. The -b argument controls the batch size. For more details of arguments, see [doc/documentation.md](doc/documentation.md).
 
-As a result, you shall be able to see the visualization in the generated video "demo_visualization_inference.mp4", as shown below.
+In the results, you should be able to see the visualization in the generated video "demo_visualization_inference.mp4", as shown below.
 
 <p align="center"> 
 <img width="640" height="240" src="demo/demo_result.png">
@@ -144,7 +144,15 @@ In addtion, you can also test out the --table mode by:
 ```
 $ python -m deepvog --table demo_table_mode.csv
 ```
- 
+
+## Limitations
+
+DeepVOG is intended for pupil segmentation and gaze estimation under the assumptions below:
+
+1. Video contains only single eye features (pupil, iris, eyebrows, eyelashes, eyelids...etc), for example the [demo video](demo). Videos with facial or body features may compromise its accuracy.
+2. DeepVOG was intended for eye video recorded by head-mounted camera. Hence, It assumes fixed relative position of the eye with respect to the camera.  
+
+For more detailed discussion of the underlying assumptions of DeepVOG, please refer to the [paper](https://doi.org/10.1016/j.jneumeth.2019.05.016).  
 
 ## Authors
 
