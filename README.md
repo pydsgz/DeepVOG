@@ -50,9 +50,9 @@ $ ...
 2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
-$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.2 bash
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.3 bash
 or
-$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.2 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.3 bash
 ```
 ### Usage (Command-line interface)
 The CLI allows you to fit/infer single video, or multiple of them by importing a csv table. They can be simply called by:
@@ -97,25 +97,41 @@ model = deepvog.load_DeepVOG()
 # Initialize the class. It requires information of your camera's focal length and sensor size, which should be available in product manual.
 inferer = deepvog.gaze_inferer(model, focal_length, video_shape, sensor_size) 
 
-# Fit an eyeball model from "video_1.mp4". The model will be stored as the "inferer" instance's attribute.
-inferer.fit("video_1.mp4")
+# Fit an eyeball model from "demo.mp4". The model will be stored as the "inferer" instance's attribute.
+inferer.process("demo.mp4", mode="Fit")
 
-# After fitting, infer gaze from "video_1.mp4" and output the results into "result_video_1.csv"
-inferer.predict("video_1.mp4", "result_video_1.csv" )
+# After fitting, infer gaze from "demo.mp4" and output the results into "demo_result.csv"
+inferer.process("demo.mp4", mode="Infer", output_record_path="demo_results.csv")
 
 # Optional
 
-# You may also save the eyeball model to "video_1_mode.json" for subsequent gaze inference
-inferer.save_eyeball_model("video_1_model.json") 
+# You may also save the eyeball model to "demo_model.json" for subsequent gaze inference
+inferer.save_eyeball_model("demo_model.json") 
 
-# By loading the eyeball model, you don't need to fit the model again with inferer.fit("video_1.mp4")
-inferer.load_eyeball_model("video_1_model.json") 
+# By loading the eyeball model, you don't need to fit the model again
+inferer.load_eyeball_model("demo_model.json") 
 
 ```
 
-## Publication and Citation
+## Demo
 
-If you plan to use this work in your research or product, please cite this repository and our publication pre-print on [arXiv](https://arxiv.org/). 
+Demo video is located at [demo](demo). After installing DeepVOG, you can move to that directory and run the following commands:
+
+```
+$ python -m deepvog --fit ./demo.mp4 ./demo_eyeball_model.json -v ./demo_visualization_fitting.mp4 -m -b 256
+$ python -m deepvog --infer ./demo.mp4 ./demo_eyeball_model.json ./demo_gaze_results.csv -b 32 -v ./demo_visualization_inference.mp4 -m
+```
+
+The -v argument draws the visualization of fitted ellipse and gaze vector to a designated video. The -m argument draws the segmented heatmap of pupil side by side. The -b argument controls the batch size. For more details of arguments, see [doc/documentation.md](doc/documentation.md).
+
+As a result, you shall be able to see the visualization in the generated video "demo_visualization_inference.mp4", as shown below.
+
+<p align="center"> 
+<img width="320" height="240" src="demo/demo_result.png">
+</p>
+
+
+ 
 
 ## Authors
 

@@ -16,7 +16,9 @@ Although the default camera intrinsic parameters are given, they vary largely ac
 - `-g` or `--gpu`: GPU device number. Default: `0`.
 - `-vs` or `--vidshape`: Original and uncropped video shape of your camera output, height and width in **pixel**. Default: `(240,320)`.
 - `-s` or `--sensor`: Sensor size of your camera digital sensor, height and width in **mm**. Default: `(3.6,4.8)`. 
-- `-b` or `--batchsize`: Batch size of video frames for gaze inference. It is recommended to be higher than 32. Default: `512`.
+- `-b` or `--batchsize`: Batch size of video frames for gaze inference. It is recommended to be at least 32. Default: `512`.
+- `-v` or `--visualize`: Path of the video you want to store your visualization. Default: `""` (no visualization to save). This function is not yet available with `--table` and `--tui` mode.
+- `-m` or `--heatmap`: Showing heatmap in the saved visualization video. This function is not yet available with `--table` and `--tui` mode. 
 
 ## Input/output format
 
