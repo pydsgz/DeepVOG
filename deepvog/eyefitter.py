@@ -128,7 +128,7 @@ class SingleEyeFitter(object):
                 (self.unprojected_3D_pupil_positions[1], self.current_pupil_3Dcentre_neg.reshape(1, 3)))
             self.ellipse_centres = np.vstack((self.ellipse_centres, self.current_ellipse_centre.reshape(1, 2)))
 
-    def fit_projected_eye_centre(self, ransac=False, max_iters=1000, samples_to_fit=50, min_distance=2000):
+    def fit_projected_eye_centre(self, ransac=False, max_iters=1000, min_distance=2000):
         # You will need to determine when to fit outside of the class
         if (self.unprojected_gaze_vectors is None) or (self.ellipse_centres is None):
             msg = "No unprojected gaze lines or ellipse centres were found (not yet initalized). It is likely that the network fails to segment the pupil from the video. Please ensure your input video contains only a single eye but not other facial/body features."
@@ -141,6 +141,7 @@ class SingleEyeFitter(object):
 
         # Normalisation of the 2D projection of gaze vectors is done inside intersect()
         if ransac == True:
+            samples_to_fit = np.ceil(a.shape[0]/5).astype(np.int)  # Assuming 20% of outliners
             self.projected_eye_centre = fit_ransac(a, n, max_iters=max_iters, samples_to_fit=samples_to_fit,
                                                    min_distance=min_distance)
         else:
