@@ -18,10 +18,10 @@ Although the default camera intrinsic parameters are given, they vary largely ac
 - `-b` or `--batchsize`: Batch size of video frames for gaze inference. It is recommended to be at least 32. Default: `512`.
 - `-v` or `--visualize`: Path of the video you want to store your visualization. Default: `""` (no visualization to save). This function is not yet available with `--table` mode.
 - `-m` or `--heatmap`: Showing heatmap in the saved visualization video. This function is not yet available with `--table` mode. 
-- `--skip_existed`: Tag for skipping the operation in `--table` mode if the output file already exists. No argument is accepted.
-- `--skip_errors`: Tag for skipping the operation in `--table` mode and continue the next video if error is encountered. No argument is accepted.
+- `--skip_existed`: Flag for skipping the operation in `--table` mode if the output file already exists. No argument is accepted.
+- `--skip_errors`: Flag for skipping the operation in `--table` mode and continue the next video if error is encountered. No argument is accepted.
 - `--log_errors`: Path that stores your logged error messages when you skip the error by `--skip_errors` in `--table` mode.
-- `--no_gaze`: Tag for enabling only pupil segmentation in `infer` mode, without gaze estimation. In this mode, eyeball model path will be ignored (model fitting is not needed). Output result will not contain any gaze information but pupil centre coordinates. No argument is accepted. 
+- `--no_gaze`: Flag for enabling only pupil segmentation in `infer` mode, without gaze estimation. In this mode, eyeball model path will be ignored (model fitting is not needed). Output result will not contain any gaze information but pupil centre coordinates. No argument is accepted. 
 
 ## Input/output format
 
