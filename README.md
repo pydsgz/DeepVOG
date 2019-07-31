@@ -19,7 +19,9 @@ DeepVOG v1.1.4 (Date: 31-07-2019, latest)
 2. Added `--skip_errors` tag for skipping the operation in `--table` mode and continue the next video if error is encountered. 
 3. Added `--log_errors` tag for logging the errors and tracebacks in a file in `--table` mode, when error is encountered.
 4. Added `--no_gaze` tag for only pupil segmentation in `--infer` mode.
-5. One more column (`with_gaze`) to fill in the input csv file for `--table` mode.
+5. One more column (`with_gaze`) to fill in the input csv file for `--table` mode. It enables/disable gaze estimation in `--table` mode.
+
+For details of command line arguments, see [doc/documentation.md](doc/documentation.md)
 
 **Removed**:
 1. Text-based User Interface (TUI) is removed.
