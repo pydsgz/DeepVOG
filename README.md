@@ -26,7 +26,7 @@ For details of command line arguments, see [doc/documentation.md](doc/documentat
 **Removed**:
 1. Text-based User Interface (TUI) is removed.
 
-For release history, see [RELEASE.md](RELEASE.md).
+For release history, see [RELEASE.md](RELEASE.md). Update from existing package can be done via directly copying the source code [deepvog/](deepvog/) to your directory of installed DeepVOG module .
 
 ## Getting Started
 
