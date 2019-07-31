@@ -16,13 +16,13 @@ DeepVOG v1.1.4 (Date: 31-07-2019)
  
 DeepVOG v1.1.3 (Date: 24-07-2019)
 
->Improvements:
+>**Improvements**:
 >1. Added `-v` or `--visualize` tag for visualization of pupil segmentation/gaze output in a new video.
->2. Added `-m` or `--heatmap` tag showing heatmap alongside with the visualized output when `--visualize` is enabled. 
+>2. Added `-m` or `--heatmap` tag showing heatmap alongside with the visualized output when `--visualize` is enabled.    
 >
 >For details, see [doc/documentation.md](doc/documentation.md)
 >
->Bug fixed:
+>**Bug fixed**:
 >1. Fixed the sampling of fitting lines in RANSAC being not adaptive to the number of observations
 >2. Fixed the criteria of fitting lines acceptance in RANSAC being too strict for some videos.
  
