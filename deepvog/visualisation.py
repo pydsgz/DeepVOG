@@ -117,8 +117,12 @@ class VideoManager:
         # Initialization actions
         self._initialize_results_recorder()
 
-    def write_frame_with_condition(self, vid_frame, heatmap_frame):
+    def write_frame_with_condition(self, vid_frame, pred_each):
+
         if self.heatmap:
+            heatmap_frame = np.zeros((pred_each.shape[0], pred_each.shape[1], 3))  # Shape = (w, h, 3)
+            heatmap_frame[:, :, :] = np.around(
+                pred_each.reshape(pred_each.shape[0], pred_each.shape[1], 1) * 255).astype(int)
             output_frame = np.concatenate((vid_frame, heatmap_frame), axis=1)
             self.vwriter.writeFrame(output_frame)
         else:

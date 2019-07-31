@@ -11,7 +11,7 @@ from .visualisation import draw_circle, draw_ellipse, draw_line, VideoManager
 
 
 class gaze_inferer(object):
-    def __init__(self, model, flen, ori_video_shape, sensor_size):
+    def __init__(self, model, flen, ori_video_shape, sensor_size, infer_gaze_flag=True):
         """
         Initialize necessary parameters and load deep_learning model
         
@@ -49,7 +49,7 @@ class gaze_inferer(object):
         self.eyefitter = SingleEyeFitter(focal_length=self.flen * self.mm2px_scaling,
                                          pupil_radius=2 * self.mm2px_scaling,
                                          initial_eye_z=50 * self.mm2px_scaling)
-
+        self.infer_gaze_flag = infer_gaze_flag
     def process(self, video_src, mode, output_record_path="", batch_size=32,
                 output_video_path="", heatmap=False, print_prefix=""):
         """
@@ -178,12 +178,12 @@ class gaze_inferer(object):
             path (str): path of the eyeball model file.
         """
         loaded_dict = load_json(path)
-        if (self.eyefitter.eye_centre is None) or (self.eyefitter.aver_eye_radius is None):
-            self.eyefitter.eye_centre = np.array(loaded_dict["eye_centre"])
-            self.eyefitter.aver_eye_radius = loaded_dict["aver_eye_radius"]
-
-        else:
+        if (self.eyefitter.eye_centre is not None) or (self.eyefitter.aver_eye_radius is not None):
             warnings.warn("3D eyeball exists and reloaded")
+
+        self.eyefitter.eye_centre = np.array(loaded_dict["eye_centre"])
+        self.eyefitter.aver_eye_radius = loaded_dict["aver_eye_radius"]
+
 
     def _fitting_batch(self, X_batch, Y_batch):
 
@@ -200,12 +200,6 @@ class gaze_inferer(object):
             # If visualization is true, initialize output frame
             if self.vid_manager.output_video_flag:
                 vid_frame = video_frames_batch[batch_idx,]
-                if self.vid_manager.heatmap:
-                    heatmap_frame = np.zeros(Y_each.shape)  # Shape = (w, h, 3)
-                    heatmap_frame[:, :, :] = np.around(
-                        pred_each.reshape(vid_frame_shape_2d[0], vid_frame_shape_2d[1], 1) * 255).astype(int)
-                else:
-                    heatmap_frame = None
 
             # Fit each observation to eyeball model
             if centre is not None:
@@ -223,11 +217,11 @@ class gaze_inferer(object):
                     vid_frame = draw_circle(output_frame=vid_frame, frame_shape=vid_frame_shape_2d,
                                             centre=ellipse_centre_np, radius=5, color=[0, 255, 0])
 
-                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, heatmap_frame=heatmap_frame)
+                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, pred_each=pred_each)
             else:
                 # Draw original input frame when no ellipse is found
                 if self.vid_manager.output_video_flag:
-                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, heatmap_frame=heatmap_frame)
+                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, pred_each=pred_each)
 
     def _infer_batch(self, X_batch, Y_batch, idx):
 
@@ -242,18 +236,12 @@ class gaze_inferer(object):
             pred_each = Y_each[:, :, 1]
             _, _, _, _, ellipse_info = self.eyefitter.unproject_single_observation(pred_each)
             (rr, cc, centre, w, h, radian, ellipse_confidence) = ellipse_info
-
             # If visualization is true, initialize output frame for drawing
             if self.vid_manager.output_video_flag:
                 vid_frame = video_frames_batch[batch_idx,]
-                if self.vid_manager.heatmap:
-                    heatmap_frame = np.zeros(Y_each.shape)  # Shape = (w, h, 3)
-                    heatmap_frame[:, :, :] = np.around(
-                        pred_each.reshape(vid_frame_shape_2d[0], vid_frame_shape_2d[1], 1) * 255).astype(int)
-                else:
-                    heatmap_frame = None
-            # If ellipse fitting is successful, i.e. an ellipse is located.
-            if centre is not None:
+
+            # If ellipse fitting is successful, i.e. an ellipse is located, AND gaze inference is ENABLED
+            if (centre is not None) and self.infer_gaze_flag:
                 p_list, n_list, _, consistence = self.eyefitter.gen_consistent_pupil()
                 p1, n1 = p_list[0], n_list[0]
                 px, py, pz = p1[0, 0], p1[1, 0], p1[2, 0]
@@ -277,8 +265,25 @@ class gaze_inferer(object):
                     vid_frame = self._draw_vis_on_frame(vid_frame, vid_frame_shape_2d, ellipse_info, ellipse_centre_np,
                                                         projected_eye_centre, gaze_vec=n1)
 
-                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, heatmap_frame=heatmap_frame)
+                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, pred_each=pred_each)
 
+            # If ellipse fitting is successful, i.e. an ellipse is located, AND gaze inference is DISABLED
+            elif (centre is not None) and (not self.infer_gaze_flag):
+                positions, gaze_angles, inference_confidence = None, None, None
+                self.vid_manager.write_results(frame_id=frame, pupil2D_x=centre[0], pupil2D_y=centre[1], gaze_x=np.nan,
+                                               gaze_y=np.nan, confidence=ellipse_confidence, consistence=np.nan)
+                if self.vid_manager.output_video_flag:
+                    ellipse_centre_np = np.array(centre)
+
+                    # Draw pupil ellipse
+                    vid_frame = draw_ellipse(output_frame=vid_frame, frame_shape=vid_frame_shape_2d,
+                                             ellipse_info=ellipse_info, color=[255, 255, 0])
+                    # Draw small circle at the ellipse centre
+                    vid_frame = draw_circle(output_frame=vid_frame, frame_shape=vid_frame_shape_2d,
+                                            centre=ellipse_centre_np, radius=5, color=[0, 255, 0])
+                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, pred_each=pred_each)
+
+            # IF ellipse fitting is unsuccessful.
             else:
                 # If ellipse cannot be found, fill the outputs with None's
                 positions, gaze_angles, inference_confidence = None, None, None
@@ -288,7 +293,7 @@ class gaze_inferer(object):
 
                 # Draw original input frame when no ellipse is found
                 if self.vid_manager.output_video_flag:
-                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, heatmap_frame=heatmap_frame)
+                    self.vid_manager.write_frame_with_condition(vid_frame=vid_frame, pred_each=pred_each)
 
         return positions, gaze_angles, inference_confidence
 
@@ -303,9 +308,12 @@ class gaze_inferer(object):
 
     def _check_eyeball_model_exists(self):
         try:
-            assert isinstance(self.eyefitter.eye_centre, np.ndarray)
-            assert self.eyefitter.eye_centre.shape == (3, 1)
-            assert self.eyefitter.aver_eye_radius is not None
+            if self.infer_gaze_flag:
+                assert isinstance(self.eyefitter.eye_centre, np.ndarray)
+                assert self.eyefitter.eye_centre.shape == (3, 1)
+                assert self.eyefitter.aver_eye_radius is not None
+            else:
+                pass
         except AssertionError as e:
             print(
                 "3D eyeball mode is not found. Gaze inference cannot continue. Please fit/load an eyeball model first")

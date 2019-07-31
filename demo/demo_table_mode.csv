@@ -1,3 +1,4 @@
-operation, fit_vid,          infer_vid,         eyeball_model,     result
-fit,       ./demo.mp4,       (doesn't matter),  ./demo_model.json, (doesn't matter)
-infer,     (doesn't matter), ./demo.mp4,        ./demo_model.json, ./results.csv
+operation, fit_vid,          infer_vid,         eyeball_model,     result               , with_gaze
+fit,       ./demo.mp4,       (doesn't matter),  ./demo_model.json, (doesn't matter)     ,
+infer,     (doesn't matter), ./demo.mp4,        ./demo_model.json, ./results.csv        , 1
+infer,     (doesn't matter), ./demo.mp4,        ./demo_model.json, ./results_nogaze.csv , 0

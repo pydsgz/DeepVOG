@@ -10,6 +10,21 @@ The manuscript is available open access and can be downloaded free of charge [he
 
 Yiu YH, Aboulatta M, Raiser T, Ophey L, Flanagin VL, zu Eulenburg P, Ahmadi SA. DeepVOG: Open-source Pupil Segmentation and Gaze Estimation in Neuroscience using Deep Learning. Journal of neuroscience methods. vol. 324, 2019, DOI: https://doi.org/10.1016/j.jneumeth.2019.05.016
 
+## Release Notes
+
+DeepVOG v1.1.4 (Date: 31-07-2019, latest)
+
+**Improvements**:
+1. Added `--skip_existed` tag for skipping the operation in `--table` mode if the output file already exists
+2. Added `--skip_errors` tag for skipping the operation in `--table` mode and continue the next video if error is encountered. 
+3. Added `--log_errors` tag for logging the errors and tracebacks in a file in `--table` mode, when error is encountered.
+4. Added `--no_gaze` tag for only pupil segmentation in `--infer` mode.
+5. One more column (`with_gaze`) to fill in the input csv file for `--table` mode.
+
+**Removed**:
+1. Text-based User Interface (TUI) is removed.
+
+For release history, see [RELEASE.md](RELEASE.md).
 
 ## Getting Started
 
@@ -25,7 +40,6 @@ scikit-video
 scikit-image
 tensorflow-gpu
 keras
-urwid (Not necessary if you do not use the Text-based user interface)
 ```
 As an alternative, you can use our docker image which already includes all the dependencies. The only requirement is a platform installed with nvidia driver and nvidia-docker (or nvidia runtime of docker).
 
@@ -50,9 +64,9 @@ $ ...
 2. It is highly recommended to run our program in docker. You can directly pull our docker image from dockerhub. (For tutorials on docker, see [docker](https://docs.docker.com/install/) and [nvidia-docker](https://github.com/NVIDIA/nvidia-docker))
 
 ```
-$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.3 bash
+$ docker run --runtime=nvidia -it --rm yyhhoi/deepvog:v1.1.4 bash
 or
-$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.3 bash
+$ nvidia-docker run -it --rm yyhhoi/deepvog:v1.1.4 bash
 ```
 
 ### Removal of Package
@@ -78,22 +92,6 @@ In addition, you will need to specify your camera parameters such as focal lengt
 $ python -m deepvog --fit /PATH/video_fit.mp4 /PATH/eyeball_model.json --flen 12 --vid-shape 240,320 --sensor 3.6,4.8 --batchsize 32 --gpu 0
 ```
 Please refer to [doc/documentation.md](doc/documentation.md) for the meaning of arguments and input/output formats. Alternatively, you can also type `$ python -m deepvog -h` for usage examples.
-
-
-### Usage (Text-based user interface)
-DeepVOG comes with a simple text-based user interface (TUI). After installation, you can simply type in terminal:
-```
-$ python -m deepvog --tui
-```
-
-If it is successful, you should see the interface: <br/>
-
-<p align="center"> 
-<img src="https://i.imgur.com/0zc13mv.png">
-</p>
-From now on, you can follow the instructions within the interface and do offline analysis on your videos.<br/>
-
-
 
 
 ### Usage (As a python module)

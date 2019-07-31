@@ -46,7 +46,6 @@ The "operation" column should contain either fit/infer/both:
 fit_help = "Fitting an eyeball model. Call with --fit [video_src_path] [eyeball_model_saving_path]."
 infer_help = "Inter video from eyeball model. Call with --infer [video_scr_path] [eyeball_model_path] [results_saving_path]"
 table_help = "Fit or infer videos from a csv table. The column names of the csv must follow a format (see --help description). Call with --table [csv_path]"
-tui_help = "Open Text-Based User interface (TUI)"
 ori_vid_shape_help = "Original and uncropped video shape of your camera output, height and width in pixel. Default = 240 320"
 flen_help = "Focal length of your camera in mm."
 gpu_help = "GPU device number. Default = 0"
@@ -60,7 +59,6 @@ required = parser.add_argument_group("required arguments")
 required.add_argument("--fit", help=fit_help, nargs=2, type=str, metavar=("PATH", "PATH"))
 required.add_argument("--infer", help=infer_help, nargs=3, type=str, metavar=("PATH", "PATH", "PATH"))
 required.add_argument("--table", help=table_help, type=str, metavar=("PATH"))
-required.add_argument("--tui", help=tui_help, type=str, metavar=("DIRECTORY"))
 parser.add_argument("-f", "--flen", help=flen_help, default=6, type=float, metavar=("FLOAT"))
 parser.add_argument("-g", "--gpu", help=gpu_help, default="0", type=str, metavar=("INT"))
 parser.add_argument("-vs", "--vidshape", help=ori_vid_shape_help, default="(240, 320)", type=str, metavar=("INT,INT"))
@@ -68,25 +66,22 @@ parser.add_argument("-s", "--sensor", help=sensor_help, default="(3.6, 4.8)", ty
 parser.add_argument("-b", "--batchsize", help=batch_help, default=512, type=int, metavar=("INT"))
 parser.add_argument("-v", "--visualize", help=visualize_help, default="", type=str, metavar=("PATH"))
 parser.add_argument("-m", "--heatmap", help=heatmap_help, default=False, action="store_true")
+parser.add_argument("--skip_existed", default=False, action="store_true")
+parser.add_argument("--skip_errors", default=False, action="store_true")
+parser.add_argument("--log_errors", type=str, default="", metavar=("PATH"))
+parser.add_argument("--no_gaze", default=True, action="store_false")
 
 args = parser.parse_args()
 
 
-# Check there is EXACTLY one argument from --fit, --infer, --table and --tui
-all_modes_list = [args.fit, args.infer, args.table, args.tui]
+# Check there is EXACTLY one argument from --fit, --infer and --table
+all_modes_list = [args.fit, args.infer, args.table]
 cli_modes_list = all_modes_list[0:3]
 num_modes = sum([x is not None for x in all_modes_list])
 if num_modes != 1:
-    parser.error("Exactly one argument from --fit, --infer, --table and --tui is requried")
+    parser.error("Exactly one argument from --fit, --infer and --table is requried")
 
 else:
-
-    # Text-based user interface mode
-    if args.tui is not None:
-        from .deepvog_tui import deepvog_tui
-
-        tui = deepvog_tui(args.tui)
-        tui.run_tui()
 
     # Command line mode
     if sum([x is not None for x in cli_modes_list]) > 0:
@@ -101,7 +96,11 @@ else:
 
         # Table mode
         if args.table is not None:
-            jobman_table = deepvog_jobman_table_CLI(args.table, gpu, flen, ori_video_shape, sensor_size, batch_size)
+            jobman_table = deepvog_jobman_table_CLI(args.table, gpu, flen,
+                                                    ori_video_shape, sensor_size, batch_size,
+                                                    skip_errors=args.skip_errors,
+                                                    skip_existed=args.skip_existed,
+                                                    error_log_path=args.log_errors)
             jobman_table.run_batch()
 
         # Fit or Infer mode
@@ -116,4 +115,5 @@ else:
                          eyeball_model_path=eyemodel_load,
                          output_record_path=result_output,
                          output_video_path=args.visualize,
-                         heatmap=args.heatmap)
+                         heatmap=args.heatmap,
+                         infer_gaze_flag=args.no_gaze)
