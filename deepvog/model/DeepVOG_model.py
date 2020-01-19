@@ -29,7 +29,7 @@ def encoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s 
     X_downed = Activation('relu')(X_downed)
     return X, X_downed
 
-def decoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s = 1, X_jump = 0, up_sampling = True):
+def decoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s = 1, init_X_joint = 0, X_jump = 0, up_sampling = True):
     
     # defining name basis
     conv_name_base = 'conv_' + block_type + str(stage) + '_'
@@ -37,7 +37,7 @@ def decoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s 
     
 
     # Joining X_jump from encoding side with X_uped
-    if X_jump == 0:
+    if init_X_joint == 1:
         X_joined_input = X
     else:
     # X_joined_input = Add()([X,X_jump])
@@ -85,15 +85,15 @@ def DeepVOG_net(input_shape = (240, 320, 3), filter_size= (3,3)):
     
     # Decoding Stream
     X_out = decoding_block(X = X_out, X_jump = 0, filter_size= filter_size, filters_num= 256, 
-                                 layer_num= 1, block_type = "up", stage = 1, s = 1)
+                                 layer_num= 1, block_type = "up", stage = 1, s = 1, init_X_joint = 1)
     X_out = decoding_block(X = X_out, X_jump = X_jump4, filter_size= filter_size, filters_num= 256, 
-                                 layer_num= 1, block_type = "up", stage = 2, s = 1)
+                                 layer_num= 1, block_type = "up", stage = 2, s = 1, init_X_joint = 0)
     X_out = decoding_block(X = X_out, X_jump = X_jump3, filter_size= filter_size, filters_num= 128, 
-                                 layer_num= 1, block_type = "up", stage = 3, s = 1)
+                                 layer_num= 1, block_type = "up", stage = 3, s = 1, init_X_joint = 0)
     X_out = decoding_block(X = X_out, X_jump = X_jump2, filter_size= filter_size, filters_num= 64, 
-                                 layer_num= 1, block_type = "up", stage = 4, s = 1)
+                                 layer_num= 1, block_type = "up", stage = 4, s = 1, init_X_joint = 0)
     X_out = decoding_block(X = X_out, X_jump = X_jump1, filter_size= filter_size, filters_num= 32, 
-                                 layer_num= 1, block_type = "up", stage = 5, s = 1, up_sampling = False)
+                                 layer_num= 1, block_type = "up", stage = 5, s = 1, init_X_joint = 0, up_sampling = False)
     # Output layer operations
     X_out = Conv2D(filters = 3, kernel_size = (1,1) , strides = (1,1), padding = 'valid',
                    name = "conv_out", kernel_initializer = glorot_uniform())(X_out)
