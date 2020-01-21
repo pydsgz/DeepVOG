@@ -252,7 +252,7 @@ class gaze_inferer(object):
                 self.vid_manager.write_results(frame_id=frame, pupil2D_x=centre[0], pupil2D_y=centre[1], gaze_x=x,
                                                gaze_y=y, confidence=ellipse_confidence, consistence=consistence)
 
-                print("\r(%d - %d,%d,%d,%d - conf=%d, cons=%d)" % (frame, x, y, centre[0], centre[1], ellipse_confidence, consistence), end="", flush=True)
+                #print("\r(%d - %d,%d,%d,%d - conf=%d, cons=%d)" % (frame, x, y, centre[0], centre[1], ellipse_confidence, consistence), end="", flush=True)
                 if self.vid_manager.output_video_flag:
                     # # Code below is for drawing video
                     ellipse_centre_np = np.array(centre)
