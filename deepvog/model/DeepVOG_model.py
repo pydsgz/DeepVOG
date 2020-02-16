@@ -1,10 +1,12 @@
 import os
 import numpy as np
-from keras.initializers import glorot_uniform
-from keras import layers
-from keras.layers import Input, Add, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, AveragePooling2D, MaxPooling2D, GlobalMaxPooling2D
-from keras.layers import Conv2DTranspose, Concatenate
-from keras.models import Model, load_model
+import tensorflow as tf
+from tensorflow.python.keras.initializers import glorot_uniform
+
+from tensorflow.python.keras import layers
+from tensorflow.python.keras.layers import Input, Add, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, AveragePooling2D, MaxPooling2D, GlobalMaxPooling2D
+from tensorflow.python.keras.layers import Conv2DTranspose, Concatenate
+from tensorflow.python.keras.models import Model, load_model
 
 def encoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s = 1, X_skip=0):
     
@@ -67,9 +69,10 @@ def decoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s 
 # FullVnet
 # Output layers have 3 channels. The first two channels represent two one-hot vectors (pupil and non-pupil)
 # The third layer contains all zeros in all cases (trivial)
+
 def DeepVOG_net(input_shape = (240, 320, 3), filter_size= (3,3)):
     
-    X_input = Input(input_shape)
+    X_input = Input(shape=input_shape)
     
     Nh, Nw = input_shape[0], input_shape[1]
     
@@ -100,6 +103,7 @@ def DeepVOG_net(input_shape = (240, 320, 3), filter_size= (3,3)):
     X_out = Activation("softmax")(X_out)
     model = Model(inputs = X_input, outputs = X_out, name='Pupil')
     
+
     return model
 
 def load_DeepVOG():
