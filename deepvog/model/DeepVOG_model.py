@@ -4,9 +4,11 @@ import tensorflow as tf
 from tensorflow.python.keras.initializers import glorot_uniform
 
 from tensorflow.python.keras import layers
+from keras import backend as K
 from tensorflow.python.keras.layers import Input, Add, Dense, Activation, ZeroPadding2D, BatchNormalization, Flatten, Conv2D, AveragePooling2D, MaxPooling2D, GlobalMaxPooling2D
 from tensorflow.python.keras.layers import Conv2DTranspose, Concatenate
 from tensorflow.python.keras.models import Model, load_model
+#from kito import reduce_keras_model
 
 def encoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s = 1, X_skip=0):
     
@@ -72,7 +74,7 @@ def decoding_block(X, filter_size, filters_num, layer_num, block_type, stage, s 
 
 def DeepVOG_net(input_shape = (240, 320, 3), filter_size= (3,3)):
     
-    X_input = Input(shape=input_shape)
+    X_input = Input(shape=input_shape)#, batch_size=4)
     
     Nh, Nw = input_shape[0], input_shape[1]
     
@@ -107,7 +109,35 @@ def DeepVOG_net(input_shape = (240, 320, 3), filter_size= (3,3)):
     return model
 
 def load_DeepVOG():
+    gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+    tf.config.experimental.set_memory_growth(gpu_devices[0], True)
     base_dir = os.path.dirname(__file__)
+    tf.keras.backend.set_floatx('float16')
+    #K.set_floatx('float16')
     model = DeepVOG_net(input_shape = (240, 320, 3), filter_size= (10,10))
-    model.load_weights(os.path.join(base_dir, "DeepVOG_weights.h5"))
+    model.load_weights(os.path.join(base_dir, "DeepVOG_weights_quantz_16.h5"))
+    #model.save(os.path.join(base_dir, "DeepVOG_weights_quantz_16.h5"))
+    
+    # Convert the model.
+    #import pathlib
+    #converter = tf.lite.TFLiteConverter.from_keras_model(model)
+    ##converter.optimizations = [tf.lite.Optimize.OPTIMIZE_FOR_SIZE]   
+    #converter.optimizations = [tf.lite.Optimize.DEFAULT]
+    ##converter.target_spec.supported_types = [tf.float16]
+    #tflite_fp16_model = converter.convert()
+    #tflite_models_dir = pathlib.Path(os.path.join(base_dir))
+    #tflite_model_fp16_file = tflite_models_dir/"full_model_quant_f16.tflite"
+    #tflite_model_fp16_file.write_bytes(tflite_fp16_model)
+    
+    # Load TFLite model and allocate tensors.
+    #interpreter = tf.lite.Interpreter(model_path=os.path.join(base_dir, "full_model_quant_f16.tflite"))#"full_model_lite.tflite"))
+    #interpreter.allocate_tensors()
+
+    # Get input and output tensors.
+    #input_details = interpreter.get_input_details()
+    #output_details = interpreter.get_output_details()
+    #input_shape = input_details[0]['shape']
+
+    
+    #return interpreter
     return model

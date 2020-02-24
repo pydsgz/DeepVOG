@@ -98,13 +98,13 @@ class gaze_inferer(object):
         initial_frame, final_frame = 0, vid_m
         final_batch_size = vid_m % batch_size
         final_batch_idx = vid_m - final_batch_size
-        X_batch = np.zeros((batch_size, 240, 320, 3))
-        X_batch_final = np.zeros((vid_m % batch_size, 240, 320, 3))
+        X_batch = np.zeros((batch_size, 240, 320, 3), dtype=np.float16)
+        X_batch_final = np.zeros((vid_m % batch_size, 240, 320, 3), dtype=np.float16)
 
         # Start looping for batch-wise processing
         for idx, frame in enumerate(vreader.nextFrame()):
 
-            print("\r%s%s %s (%d/%d)" % (print_prefix, mode, video_name_root + ext, idx + 1, vid_m), end="", flush=True)
+            #print("\r%s%s %s (%d/%d)" % (print_prefix, mode, video_name_root + ext, idx + 1, vid_m), end="", flush=True)
 
             frame_preprocessed = self._preprocess_image(frame, shape_correct)
             mini_batch_idx = idx % batch_size
@@ -115,6 +115,22 @@ class gaze_inferer(object):
 
             # After reaching the batch size, but not the final batch, predict heatmap and fit/infer angles
             elif (mini_batch_idx == 0) and (idx < final_batch_idx) or (idx == final_batch_idx):
+                # Get input and output tensors.
+                #input_details = self.model.get_input_details()
+                #output_details = self.model.get_output_details()
+                #self.model.allocate_tensors()
+                #print("\n\n", input_details)
+                #print(output_details)
+                #print(X_batch.shape)
+                ##self.model.resizeInput(0, new int[]{batch_size, 240, 320, 3});
+                #self.model.set_tensor(input_details[0]['index'], X_batch)
+                #print("st")
+                
+                #self.model.invoke()
+                print(X_batch.shape)
+                #Y_batch = self.model.get_tensor(output_details[0]['index'])
+
+                
                 Y_batch = self.model.predict(X_batch)
                 if mode == "Fit":
                     self._fitting_batch(X_batch=X_batch,
@@ -125,8 +141,9 @@ class gaze_inferer(object):
                                                 idx=idx - final_batch_size)
 
                 # Renew X_batch for next batch
-                X_batch = np.zeros((batch_size, 240, 320, 3))
+                X_batch = np.zeros((batch_size, 240, 320, 3), dtype=np.float16)
                 X_batch[mini_batch_idx, :, :, :] = frame_preprocessed
+                
 
             # Within the final batch but not yet reaching the last index, stack the array
             elif (idx > final_batch_idx) and (idx != final_frame - 1):
@@ -342,7 +359,7 @@ class gaze_inferer(object):
         Returns:
             output_img (numpy array): processed grayscale image with shape ( 240, 320, 1) and values float [0,1]
         """
-        output_img = np.zeros((240, 320, 3))
+        output_img = np.zeros((240, 320, 1))
         img = img / 255
         img = rgb2gray(img)
         if not shape_correct:
