@@ -17,7 +17,7 @@ This is an annotation tool that helps you label the pupil area in your pictures.
 
 # Acknowledgements
 
-The [annotation_tool.py](annotation_tool.py) was written by our colleague Taha Emre. It is based on an ellipse fitting method published by Radim Hal oy and Jan Flusser, and its python implementation ([ellipses.py](ellipses.py)) by Ben Hammel and Nick Sullivan-Monlina.  
+The [annotation_tool.py](annotation_tool.py) was written by our colleague Taha Emre. It is based on an ellipse fitting method published by Radim Hal oy and Jan Flusser, and its python implementation ([ellipses.py](ellipses.py)) by Ben Hammel and Nick Sullivan-Monlina. The latest implementation of the ellipse fitting method can be found in their [Github repository](https://github.com/bdhammel/least-squares-ellipse-fitting/blob/master/ellipse.py).   
 
 
 # References
