@@ -1,5 +1,6 @@
 # What is this?
-This is an annotation tool that helps you label the pupil area in your pictures. The tool works by fitting an ellipse by clicking on at least 5 points along the pupil boundary.
+This is an annotation tool that helps you label the pupil area in your pictures. The tool works by fitting an ellipse by clicking on at least 5 points along the pupil boundary. 
+
  
 # How to use
 1. Download [annotation_tool.py](annotation_tool.py) and [ellipses.py](ellipses.py) into the same directory. 
@@ -13,6 +14,9 @@ This is an annotation tool that helps you label the pupil area in your pictures.
 <img width="330" height="302.5" src="ellipse_fitted.png">
 </p>
 5. The fitting will produce two extra files 'PICTURE_NAME.txt'and 'PICTURE_NAME_points.txt' in the same directory. The former contains the x- and y-coordinates of pupile centre. The latter contains x- and y-coordinates of the annotated points on pupil boundary.
+
+<br/><br/>
+The current [annotation_tool.py](annotation_tool.py) only looks for pictures with extension names of .png and .jpg. However, it can be easily extended.  
  
 
 # Acknowledgements
