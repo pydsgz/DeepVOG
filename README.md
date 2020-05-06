@@ -154,6 +154,10 @@ DeepVOG is intended for pupil segmentation and gaze estimation under the assumpt
 
 For more detailed discussion of the underlying assumptions of DeepVOG, please refer to the [paper](https://doi.org/10.1016/j.jneumeth.2019.05.016).  
 
+## Annotation tools
+See [annotation_tool/README.md](annotation_tool/README.md).
+
+
 ## Authors
 
 * **Yiu Yuk Hoi** - *Implementation and validation*

@@ -260,7 +260,7 @@ class gaze_inferer(object):
                     # The lines below are for translation from camera coordinate system (centred at image centre)
                     # to numpy's indexing frame. You substract the vector by the half of the video's 2D shape.
                     # Col = x-axis, Row = y-axis
-                    projected_eye_centre += np.array(vid_frame_shape_2d).T.reshape(-1, 1) / 2
+                    projected_eye_centre += np.array(vid_frame_shape_2d[::-1]).reshape(-1, 1) / 2
 
                     vid_frame = self._draw_vis_on_frame(vid_frame, vid_frame_shape_2d, ellipse_info, ellipse_centre_np,
                                                         projected_eye_centre, gaze_vec=n1)
