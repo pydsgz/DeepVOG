@@ -14,27 +14,23 @@ class gaze_inferer(object):
     def __init__(self, model, flen, ori_video_shape, sensor_size, infer_gaze_flag=True):
         """
         Initialize necessary parameters and load deep_learning model
-        
+
         Args:
             model: Deep learning model that perform image segmentation. Pre-trained model is provided at https://github.com/pydsgz/DeepVOG/model/DeepVOG_model.py, simply by loading load_DeepVOG() with "DeepVOG_weights.h5" in the same directory. If you use your own model, it should take input of grayscale image (m, 240, 320, 3) with value float [0,1] and output (m, 240, 320, 3) with value float [0,1] where (m, 240, 320, 1) is the pupil map.
-            
+
             flen (float): Focal length of camera in mm. You can look it up at the product menu of your camera
-            
+
             ori_video_shape (tuple or list or np.ndarray): Original video shape from your camera, (height, width) in pixel. If you cropped the video before, use the "original" shape but not the cropped shape
-            
+
             sensor_size (tuple or list or np.ndarray): Sensor size of your camera, (height, width) in mm. For 1/3 inch CMOS sensor, it should be (3.6, 4.8). Further reference can be found in https://en.wikipedia.org/wiki/Image_sensor_format and you can look up in your camera product menu
-        
+
 
         """
         # Assertion of shape
         try:
-            assert ((isinstance(flen, int) or isinstance(flen, float)))
-            assert (isinstance(ori_video_shape, tuple) or isinstance(ori_video_shape, list) or isinstance(
-                ori_video_shape, np.ndarray))
-            assert (isinstance(sensor_size, tuple) or isinstance(sensor_size, list) or isinstance(sensor_size,
-                                                                                                  np.ndarray))
-            assert (isinstance(sensor_size, tuple) or isinstance(sensor_size, list) or isinstance(sensor_size,
-                                                                                                  np.ndarray))
+            assert isinstance(flen, (int, float))
+            assert isinstance(ori_video_shape, (tuple, list, np.ndarray))
+            assert isinstance(sensor_size, (tuple, list, np.ndarray))
         except AssertionError:
             print("At least one of your arguments does not have correct type")
             raise TypeError
@@ -157,7 +153,7 @@ class gaze_inferer(object):
     def save_eyeball_model(self, path):
         """
         Save eyeball model parameters in json format.
-        
+
         Args:
             path (str): path of the eyeball model file.
         """
@@ -173,7 +169,7 @@ class gaze_inferer(object):
     def load_eyeball_model(self, path):
         """
         Load eyeball model parameters of json format from path.
-        
+
         Args:
             path (str): path of the eyeball model file.
         """
@@ -335,7 +331,7 @@ class gaze_inferer(object):
     @staticmethod
     def _preprocess_image(img, shape_correct):
         """
-        
+
         Args:
             img (numpy array): unprocessed image with shape (w, h, 3) and values int [0, 255]
         Returns:
